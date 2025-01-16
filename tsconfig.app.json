@@ -1,0 +1,111 @@
+// {
+//   "compilerOptions": {
+//     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+//     "target": "ES2020",
+//     "useDefineForClassFields": true,
+//     "lib": ["ES2020", "DOM", "DOM.Iterable"],
+//     "module": "ESNext",
+//     "skipLibCheck": true,
+
+//     /* Bundler mode */
+//     "moduleResolution": "bundler",
+//     "allowImportingTsExtensions": true,
+//     "isolatedModules": true,
+//     "moduleDetection": "force",
+//     "noEmit": true,
+//     "jsx": "react-jsx",
+
+//     /* Linting */
+//     "strict": true,
+//     "noUnusedLocals": true,
+//     "noUnusedParameters": true,
+//     "noFallthroughCasesInSwitch": true,
+//     "noUncheckedSideEffectImports": true
+//   },
+//   "include": ["src"]
+// }
+
+// {
+//   // "compileOnSave": true,
+//   "noImplicitAny": false,
+//   "compilerOptions": {
+//     "target": "esnext",
+//     "lib": ["es2015", "DOM", "DOM.Iterable"],
+//     "module": "ESNext",
+//     "jsx": "react-jsx",
+//     "baseUrl": "./src" /* Base directory to resolve non-absolute module names. */,
+//     "paths": {
+//       /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
+//       "@/*": ["*"]
+//     },
+//     "moduleResolution": "bundler",
+//     "useDefineForClassFields": true,
+//     "skipLibCheck": true,
+//     "allowImportingTsExtensions": true,
+//     "resolveJsonModule": true,
+//     "isolatedModules": true,
+//     "noEmit": true,
+//     "forceConsistentCasingInFileNames": false
+//   },
+//   "include": ["src/**/*"]
+// }
+
+// {
+//   "target": "ES5",
+//   "module": "commonjs",
+//   "lib": ["es2017", "dom"],
+//   "allowJs": true,
+//   "jsx": "react-jsx",
+//   "sourceMap": true,
+//   "noImplicitAny": false,
+//   "noFallthroughCasesInSwitch": true,
+//   "moduleResolution": "node",
+//   "allowSyntheticDefaultImports": true,
+//   "esModuleInterop": true,
+//   "skipLibCheck": true,
+//   "resolveJsonModule": true,
+//   "compilerOptions": {
+//     "baseUrl": "./src",
+//     "outDir": "lib",
+//     "rootDir": "src",
+//     "allowJs": false,
+//     "paths": {
+//       "@/*": ["*"],
+//       "react": ["./node_modules/@types/react"]
+//     },
+//     "lib": ["ES2021.String"]
+//   },
+//   "include": ["src"]
+// }
+
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noImplicitAny": false, // 명시적이지 않은 'any' 유형으로 표현식 및 선언 사용 시 오류 발생
+    "noUnusedLocals": true, // 쓰지않는 지역변수 있으면 에러내기
+    "noUnusedParameters": true, // 쓰지않는 파라미터 있으면 에러내기
+    "noFallthroughCasesInSwitch": true, // switch문 이상하면 에러내기
+
+    "baseUrl": "./src" /* Base directory to resolve non-absolute module names. */,
+    "paths": {
+      /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
+      "@/*": ["*"]
+    }
+  },
+  "include": ["src"]
+}

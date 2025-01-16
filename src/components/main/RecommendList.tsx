@@ -1,0 +1,29 @@
+import { useQueryAbandonmentPublicGET } from '@/services/querys/useQueryAbandonmentPublicGET';
+import { memo } from 'react';
+import RecommendCard from './RecommendCard';
+import { Box } from '@mui/material';
+
+export default memo(function RecommendList() {
+  // apis
+  const { data } = useQueryAbandonmentPublicGET(
+    {
+      // upr_cd: 6110000,
+      // bgnde: '20200101',
+      // endde: '20241231',
+    },
+    { enabled: true },
+  );
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        gap: 2,
+      }}
+    >
+      {data &&
+        data?.response?.body?.items?.item?.map((info) => (
+          <RecommendCard key={info.desertionNo} info={info} />
+        ))}
+    </Box>
+  );
+});
