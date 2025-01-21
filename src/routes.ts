@@ -1,6 +1,7 @@
 export const ROUTES = {
   MAIN: '/',
   RECOMMEND: '/recommend',
+  DETAIL: '/recommend/:id',
   MYINFO: '/myInfo',
 };
 
