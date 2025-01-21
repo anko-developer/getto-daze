@@ -11,11 +11,16 @@ import { memo, useEffect, useState } from 'react';
 
 interface Props {
   info: abandonmentPublicItem;
+  onClick: (id: string, info: abandonmentPublicItem) => void;
 }
 
-export default memo(function RecommendCard({ info }: Props) {
+export default memo(function RecommendCard({ info, onClick }: Props) {
+  // states
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+
+  // actions
+  const handleClick = (id, info) => onClick(id, info);
 
   useEffect(() => {
     setIsImageLoaded(false);
@@ -28,7 +33,11 @@ export default memo(function RecommendCard({ info }: Props) {
     img.onerror = () => setHasError(true);
   }, [info.popfile]);
   return (
-    <Card variant="outlined" sx={{ flex: 'none', width: 200 }}>
+    <Card
+      variant="outlined"
+      sx={{ flex: 'none', width: 200 }}
+      onClick={() => handleClick(info.desertionNo, info)}
+    >
       <CardActionArea>
         {!isImageLoaded && !hasError && (
           <Skeleton variant="rectangular" width={200} height={200} />
