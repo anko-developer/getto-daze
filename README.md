@@ -34,3 +34,7 @@ tailwindcss 3.4.16
 eslint
 typescript
 ```
+
+### Features to be added
+
+- 실시간 채팅으로 반려동물 입양에 대한 문의 기능 (Socket.IO)
