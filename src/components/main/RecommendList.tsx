@@ -19,7 +19,7 @@ export default memo(function RecommendList() {
 
   // actions
   const handleClick = (id, info) =>
-    navigate(`/recommend/${id}`, { state: { info } });
+    navigate(`/detail/${id}`, { state: { info } });
 
   return (
     <Box

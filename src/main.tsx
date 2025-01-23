@@ -6,7 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const Main = React.lazy(() => import('./pages/Main.tsx'));
 const Recommend = React.lazy(() => import('./pages/Recommend.tsx'));
-const RecommendDetail = React.lazy(() => import('./pages/RecommendDetail.tsx'));
+const Detail = React.lazy(() => import('./pages/Detail.tsx'));
 const MyInfo = React.lazy(() => import('./pages/MyInfo.tsx'));
 
 const router = createBrowserRouter([
@@ -24,8 +24,8 @@ const router = createBrowserRouter([
         element: <Recommend />,
       },
       {
-        path: '/recommend/:id',
-        element: <RecommendDetail />,
+        path: '/detail/:id',
+        element: <Detail />,
       },
       {
         path: '/myInfo',

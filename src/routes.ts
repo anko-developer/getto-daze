@@ -1,7 +1,8 @@
 export const ROUTES = {
   MAIN: '/',
   RECOMMEND: '/recommend',
-  DETAIL: '/recommend/:id',
+  // DETAIL: '/recommend/:id',
+  DETAIL: '/detail/:id',
   MYINFO: '/myInfo',
 };
 

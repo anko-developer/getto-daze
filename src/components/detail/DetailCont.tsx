@@ -6,7 +6,7 @@ interface Props {
   info: abandonmentPublicItem;
 }
 
-export default memo(function RecommendDetailCont({ info }: Props) {
+export default memo(function DetailCont({ info }: Props) {
   return (
     <>
       {info && (
@@ -39,7 +39,11 @@ export default memo(function RecommendDetailCont({ info }: Props) {
                 ? '암컷'
                 : '미상'}
               (중성화{' '}
-              {info.neuterYn === 'Y' ? 'O' : info.neuterYn === 'N' ? 'X' : '?'}
+              {info.neuterYn === 'Y'
+                ? 'O'
+                : info.neuterYn === 'N'
+                ? 'X'
+                : '/ 알수없음'}
               )/
               {info.colorCd}/{info.age}/{info.weight}
             </Typography>
