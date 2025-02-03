@@ -72,7 +72,7 @@ export default function App() {
     return location.pathname;
   }, [location.pathname]);
   const hideNavigation = useMemo(() => {
-    return /\/(detail|wow)\//.test(locationPath);
+    return /^\/(detail|messenger)(\/|$)/.test(locationPath); // path 값에 detail, messenger 들어가면 hide 처리
   }, [locationPath]);
 
   return (
