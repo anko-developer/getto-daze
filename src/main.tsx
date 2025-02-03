@@ -8,6 +8,7 @@ const Main = React.lazy(() => import('./pages/Main.tsx'));
 const Recommend = React.lazy(() => import('./pages/Recommend.tsx'));
 const Detail = React.lazy(() => import('./pages/Detail.tsx'));
 const MyInfo = React.lazy(() => import('./pages/MyInfo.tsx'));
+const Messenger = React.lazy(() => import('./pages/Messenger.tsx'));
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: '/myInfo',
         element: <MyInfo />,
+      },
+      {
+        path: '/messenger',
+        element: <Messenger />,
       },
     ],
   },
