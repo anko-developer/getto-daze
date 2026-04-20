@@ -9,23 +9,35 @@ export function InquiryForm({ animal }: Props) {
   const [message, setMessage] = useState('')
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
-    await fetch('/api/inquiry', {
-      method: 'POST',
-      body: JSON.stringify({
-        animal_id: animal.id,
-        animal_kind: animal.kind,
-        care_nm: animal.care_nm,
-        care_tel: animal.care_tel,
-        message,
-      }),
-      headers: { 'Content-Type': 'application/json' },
-    })
-    setSent(true)
-    setLoading(false)
+    setError(null)
+    try {
+      const res = await fetch('/api/inquiry', {
+        method: 'POST',
+        body: JSON.stringify({
+          animal_id: animal.id,
+          animal_kind: animal.kind,
+          care_nm: animal.care_nm,
+          care_tel: animal.care_tel,
+          message,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        setError(data.error ?? '전송 중 오류가 발생했어요. 다시 시도해주세요.')
+      } else {
+        setSent(true)
+      }
+    } catch {
+      setError('네트워크 오류가 발생했어요. 다시 시도해주세요.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   if (sent) {
@@ -49,6 +61,7 @@ export function InquiryForm({ animal }: Props) {
         onChange={(e) => setMessage(e.target.value)}
         required
       />
+      {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={loading || !message} className="w-full">
         {loading ? '전송 중...' : '문의 내용 이메일로 받기'}
       </Button>
