@@ -1,40 +1,36 @@
-# Getto Daze!
-
-겟또다제는 일본식 영어와 일본어가 합쳐진 말로, 영어 'Get'을 일본발음으로는 'ゲット(겟또)'라고 표현하고, 거기에 주로 젊은 남성이 주로 친한 친구나 형, 동생에게 사용하는 어미인 '~だぜ(~다제)'를 합친 것입니다. 'ゲット(겟또)'는 '얻다'를 영어로 한 'Get'을 의미하고, '~だぜ(~다제)'는 한국말로 하면 '~라구', '~라고' 정도로 해석하면 되서 최종적으로 겟또다제(ゲットだぜ)는 한국말로 하면 '얻었다구!', '획득했다구!', '먹었다구!' 이런 정도로 해석할 수 있습니다. 
-보호소에서 보호 중인 유기동물을 조회하고 얻은 정보를 통해 반려 동물을 가족으로 만들 수 있는 서비스입니다. '사지말고 입양하세요'
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-This section should provide instructions on how to get a copy of the project up and running on a local machine for development and testing purposes.
+First, run the development server:
 
-### Installing
-
-A step by step series of examples that tell you how to get a development environment running.
-
-Say what the step will be:
-
-```
-npm install
-```
-
-### Dependencies
-
-```
-mui/material 6.2.0
-mui/icons-material 6.3.1
-tanstack/react-query 5.62.7
-qs 6.13.1
-axios 1.7.9
-lodash 4.17.21
-react 18.3.1
-react-error-boundary 4.1.2
-react-router-dom 7.0.2
-zustand 5.0.2
-tailwindcss 3.4.16
-eslint
-typescript
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-### Features to be added
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-- 실시간 채팅으로 반려동물 입양에 대한 문의 기능 (Socket.IO)
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
