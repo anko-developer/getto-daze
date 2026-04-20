@@ -2,7 +2,13 @@ import { Resend } from 'resend'
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+let _resend: Resend | null = null
+function getResendClient(): Resend {
+  if (!_resend) {
+    _resend = new Resend(process.env.RESEND_API_KEY)
+  }
+  return _resend
+}
 
 function escapeHtml(str: string): string {
   return str
@@ -20,7 +26,7 @@ export async function POST(request: NextRequest) {
 
   const { animal_id, animal_kind, care_nm, care_tel, message } = await request.json()
 
-  const { error } = await resend.emails.send({
+  const { error } = await getResendClient().emails.send({
     from: 'no-reply@gettodaze.vercel.app',
     to: user.email!,
     subject: `[겟토 데이즈] ${escapeHtml(String(animal_kind))} 입양 문의 내용`,
