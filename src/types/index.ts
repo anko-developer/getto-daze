@@ -10,6 +10,7 @@ export type Animal = {
   weight: string | null
   feature: string | null
   image_url: string | null
+  // 'expired' is a sentinel we write to our DB when notice_edt passes — not from the API
   status: '보호중' | 'expired'
   notice_edt: string
   synced_at: string
