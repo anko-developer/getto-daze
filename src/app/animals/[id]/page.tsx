@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import { InquiryForm } from '@/components/InquiryForm'
+import { AnimalImage } from '@/components/AnimalImage'
 import { createClient } from '@/lib/supabase/server'
 import { Animal } from '@/types'
 
@@ -31,13 +31,7 @@ export default async function AnimalDetailPage({
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="relative aspect-video rounded-2xl overflow-hidden bg-muted mb-6">
         {animal.image_url ? (
-          <Image
-            src={animal.image_url}
-            alt={animal.kind ?? '동물'}
-            fill
-            className="object-cover"
-            sizes="672px"
-          />
+          <AnimalImage src={animal.image_url} alt={animal.kind ?? '동물'} />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-6xl">🐾</div>
         )}
