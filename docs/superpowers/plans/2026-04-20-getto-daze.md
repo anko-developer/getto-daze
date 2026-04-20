@@ -82,6 +82,7 @@ getto-daze/
 ## Task 1: 프로젝트 초기 세팅
 
 **Files:**
+
 - Create: `next.config.ts`
 - Create: `tailwind.config.ts`
 - Create: `.env.example`
@@ -151,39 +152,39 @@ ANIMAL_API_BASE=http://apis.data.go.kr/1543061/abandonmentPublicSrvc
 ```typescript
 // src/types/index.ts
 export type Animal = {
-  id: string
-  care_nm: string
-  care_tel: string
-  region_cd: string
-  city_cd: string | null
-  kind: string
-  age: string
-  sex: 'M' | 'F' | 'Q'
-  weight: string | null
-  feature: string | null
-  image_url: string | null
-  status: '보호중' | 'expired'
-  notice_edt: string
-  synced_at: string
-  stale: boolean
-}
+  id: string;
+  care_nm: string;
+  care_tel: string;
+  region_cd: string;
+  city_cd: string | null;
+  kind: string;
+  age: string;
+  sex: 'M' | 'F' | 'Q';
+  weight: string | null;
+  feature: string | null;
+  image_url: string | null;
+  status: '보호중' | 'expired';
+  notice_edt: string;
+  synced_at: string;
+  stale: boolean;
+};
 
 export type Favorite = {
-  id: string
-  user_id: string
-  animal_id: string
-  created_at: string
-}
+  id: string;
+  user_id: string;
+  animal_id: string;
+  created_at: string;
+};
 
 export type SurveyAnswer = {
-  housing: '아파트' | '단독주택' | '기숙사'
-  has_yard: boolean
-  walk_time: '30분 이하' | '1시간' | '2시간 이상'
-  family: '혼자' | '커플' | '가족 (아이 있음)'
-  size_pref: '소형' | '중형' | '대형' | '상관없음'
-  age_pref: '어린' | '성견' | '노령' | '상관없음'
-  region_cd?: string
-}
+  housing: '아파트' | '단독주택' | '기숙사';
+  has_yard: boolean;
+  walk_time: '30분 이하' | '1시간' | '2시간 이상';
+  family: '혼자' | '커플' | '가족 (아이 있음)';
+  size_pref: '소형' | '중형' | '대형' | '상관없음';
+  age_pref: '어린' | '성견' | '노령' | '상관없음';
+  region_cd?: string;
+};
 ```
 
 - [ ] **Step 6: 지역 코드 상수**
@@ -208,9 +209,9 @@ export const SIDO_LIST = [
   { code: '6470000', name: '경상북도' },
   { code: '6480000', name: '경상남도' },
   { code: '6690000', name: '제주특별자치도' },
-] as const
+] as const;
 
-export type SidoCode = typeof SIDO_LIST[number]['code']
+export type SidoCode = (typeof SIDO_LIST)[number]['code'];
 ```
 
 - [ ] **Step 7: 커밋**
@@ -225,6 +226,7 @@ git commit -m "chore: initial Next.js 15 setup with shadcn/ui and type definitio
 ## Task 2: Supabase 설정 & DB 마이그레이션
 
 **Files:**
+
 - Create: `supabase/migrations/001_initial.sql`
 - Create: `src/lib/supabase/client.ts`
 - Create: `src/lib/supabase/server.ts`
@@ -307,13 +309,13 @@ Expected: `Finished supabase db push.` 출력. 에러 시 Supabase 대시보드 
 
 ```typescript
 // src/lib/supabase/client.ts
-import { createBrowserClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr';
 
 export function createClient() {
   return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
 }
 ```
 
@@ -321,27 +323,29 @@ export function createClient() {
 
 ```typescript
 // src/lib/supabase/server.ts
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
 export async function createClient() {
-  const cookieStore = await cookies()
+  const cookieStore = await cookies();
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return cookieStore.getAll() },
+        getAll() {
+          return cookieStore.getAll();
+        },
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
+              cookieStore.set(name, value, options),
+            );
           } catch {}
         },
       },
-    }
-  )
+    },
+  );
 }
 ```
 
@@ -357,6 +361,7 @@ git commit -m "feat: supabase schema with pgvector, RLS, and client utilities"
 ## Task 3: Google OAuth 인증
 
 **Files:**
+
 - Create: `src/app/api/auth/callback/route.ts`
 - Create: `src/components/LoginModal.tsx`
 - Modify: `src/app/layout.tsx`
@@ -365,30 +370,31 @@ git commit -m "feat: supabase schema with pgvector, RLS, and client utilities"
 
 Supabase 대시보드 → Authentication → Providers → Google → Enable.
 Google Cloud Console에서 OAuth 2.0 클라이언트 생성:
+
 - Authorized redirect URI: `https://<project>.supabase.co/auth/v1/callback`
-Client ID, Client Secret을 Supabase에 입력.
+  Client ID, Client Secret을 Supabase에 입력.
 
 - [ ] **Step 2: Auth 콜백 라우트**
 
 ```typescript
 // src/app/api/auth/callback/route.ts
-import { createClient } from '@/lib/supabase/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url)
-  const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/'
+  const { searchParams, origin } = new URL(request.url);
+  const code = searchParams.get('code');
+  const next = searchParams.get('next') ?? '/';
 
   if (code) {
-    const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const supabase = await createClient();
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`)
+      return NextResponse.redirect(`${origin}${next}`);
     }
   }
 
-  return NextResponse.redirect(`${origin}/`)
+  return NextResponse.redirect(`${origin}/`);
 }
 ```
 
@@ -445,7 +451,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: '겟토 데이즈 — 유기동물 입양',
+  title: 'getto daze — 유기동물 입양',
   description: '지역 기반 유기동물 검색, AI 매칭, 입양 안내',
 }
 
@@ -472,6 +478,7 @@ git commit -m "feat: Google OAuth with Supabase Auth and LoginModal"
 ## Task 4: /api/animals 라우트 + 단위 테스트 (TDD)
 
 **Files:**
+
 - Create: `src/app/api/animals/route.ts`
 - Create: `tests/api/animals.test.ts`
 - Create: `vitest.config.ts`
@@ -480,9 +487,9 @@ git commit -m "feat: Google OAuth with Supabase Auth and LoginModal"
 
 ```typescript
 // vitest.config.ts
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
@@ -493,28 +500,28 @@ export default defineConfig({
   resolve: {
     alias: { '@': resolve(__dirname, 'src') },
   },
-})
+});
 ```
 
 - [ ] **Step 2: 테스트 작성 (실패 확인 전)**
 
 ```typescript
 // tests/api/animals.test.ts
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Supabase 클라이언트 모킹
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn(),
-}))
+}));
 
-import { GET } from '@/app/api/animals/route'
-import { createClient } from '@/lib/supabase/server'
-import { NextRequest } from 'next/server'
+import { GET } from '@/app/api/animals/route';
+import { createClient } from '@/lib/supabase/server';
+import { NextRequest } from 'next/server';
 
 function makeRequest(params: Record<string, string> = {}) {
-  const url = new URL('http://localhost/api/animals')
-  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v))
-  return new NextRequest(url)
+  const url = new URL('http://localhost/api/animals');
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  return new NextRequest(url);
 }
 
 function makeMockSupabase(data: unknown[], error: unknown = null) {
@@ -524,54 +531,60 @@ function makeMockSupabase(data: unknown[], error: unknown = null) {
     neq: vi.fn().mockReturnThis(),
     order: vi.fn().mockReturnThis(),
     limit: vi.fn().mockResolvedValue({ data, error }),
-  }
-  return { from: vi.fn().mockReturnValue(query) }
+  };
+  return { from: vi.fn().mockReturnValue(query) };
 }
 
 describe('GET /api/animals', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => vi.clearAllMocks());
 
   it('지역 코드 있음 → 해당 지역 동물 반환', async () => {
-    const animals = [{ id: '1', care_nm: '서울센터', region_cd: '6110000' }]
-    vi.mocked(createClient).mockResolvedValue(makeMockSupabase(animals) as never)
+    const animals = [{ id: '1', care_nm: '서울센터', region_cd: '6110000' }];
+    vi.mocked(createClient).mockResolvedValue(
+      makeMockSupabase(animals) as never,
+    );
 
-    const res = await GET(makeRequest({ region_cd: '6110000' }))
-    const body = await res.json()
+    const res = await GET(makeRequest({ region_cd: '6110000' }));
+    const body = await res.json();
 
-    expect(res.status).toBe(200)
-    expect(body.animals).toHaveLength(1)
-    expect(body.animals[0].region_cd).toBe('6110000')
-  })
+    expect(res.status).toBe(200);
+    expect(body.animals).toHaveLength(1);
+    expect(body.animals[0].region_cd).toBe('6110000');
+  });
 
   it('지역 코드 없음 → 전국 반환', async () => {
-    const animals = [{ id: '1' }, { id: '2' }]
-    vi.mocked(createClient).mockResolvedValue(makeMockSupabase(animals) as never)
+    const animals = [{ id: '1' }, { id: '2' }];
+    vi.mocked(createClient).mockResolvedValue(
+      makeMockSupabase(animals) as never,
+    );
 
-    const res = await GET(makeRequest())
-    const body = await res.json()
+    const res = await GET(makeRequest());
+    const body = await res.json();
 
-    expect(res.status).toBe(200)
-    expect(body.animals).toHaveLength(2)
-  })
+    expect(res.status).toBe(200);
+    expect(body.animals).toHaveLength(2);
+  });
 
   it('DB에 동물 없음 → 빈 배열 반환 (500 아님)', async () => {
-    vi.mocked(createClient).mockResolvedValue(makeMockSupabase([]) as never)
+    vi.mocked(createClient).mockResolvedValue(makeMockSupabase([]) as never);
 
-    const res = await GET(makeRequest())
-    const body = await res.json()
+    const res = await GET(makeRequest());
+    const body = await res.json();
 
-    expect(res.status).toBe(200)
-    expect(body.animals).toEqual([])
-  })
+    expect(res.status).toBe(200);
+    expect(body.animals).toEqual([]);
+  });
 
   it('status expired 동물 → 결과에서 제외', async () => {
-    const animals = [{ id: '1', status: '보호중' }]
-    vi.mocked(createClient).mockResolvedValue(makeMockSupabase(animals) as never)
+    const animals = [{ id: '1', status: '보호중' }];
+    vi.mocked(createClient).mockResolvedValue(
+      makeMockSupabase(animals) as never,
+    );
 
-    const res = await GET(makeRequest())
-    expect(res.status).toBe(200)
-  })
-})
+    const res = await GET(makeRequest());
+    expect(res.status).toBe(200);
+  });
+});
 ```
 
 - [ ] **Step 3: 테스트 실행 — 실패 확인**
@@ -586,37 +599,39 @@ Expected: FAIL — `Cannot find module '@/app/api/animals/route'`
 
 ```typescript
 // src/app/api/animals/route.ts
-import { createClient } from '@/lib/supabase/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url)
-  const region_cd = searchParams.get('region_cd')
-  const city_cd = searchParams.get('city_cd')
-  const kind = searchParams.get('kind')
-  const sex = searchParams.get('sex')
+  const { searchParams } = new URL(request.url);
+  const region_cd = searchParams.get('region_cd');
+  const city_cd = searchParams.get('city_cd');
+  const kind = searchParams.get('kind');
+  const sex = searchParams.get('sex');
 
-  const supabase = await createClient()
+  const supabase = await createClient();
 
   let query = supabase
     .from('animals')
-    .select('id, care_nm, care_tel, region_cd, city_cd, kind, age, sex, image_url, status, notice_edt, stale')
+    .select(
+      'id, care_nm, care_tel, region_cd, city_cd, kind, age, sex, image_url, status, notice_edt, stale',
+    )
     .neq('status', 'expired')
     .order('synced_at', { ascending: false })
-    .limit(50)
+    .limit(50);
 
-  if (region_cd) query = query.eq('region_cd', region_cd)
-  if (city_cd) query = query.eq('city_cd', city_cd)
-  if (kind) query = query.eq('kind', kind)
-  if (sex) query = query.eq('sex', sex)
+  if (region_cd) query = query.eq('region_cd', region_cd);
+  if (city_cd) query = query.eq('city_cd', city_cd);
+  if (kind) query = query.eq('kind', kind);
+  if (sex) query = query.eq('sex', sex);
 
-  const { data, error } = await query
+  const { data, error } = await query;
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ animals: data ?? [] })
+  return NextResponse.json({ animals: data ?? [] });
 }
 ```
 
@@ -640,6 +655,7 @@ git commit -m "feat: GET /api/animals with region/filter support (TDD)"
 ## Task 5: /api/favorites 라우트 + 단위 테스트 (TDD)
 
 **Files:**
+
 - Create: `src/app/api/favorites/route.ts`
 - Create: `tests/api/favorites.test.ts`
 
@@ -647,32 +663,43 @@ git commit -m "feat: GET /api/animals with region/filter support (TDD)"
 
 ```typescript
 // tests/api/favorites.test.ts
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }))
+vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }));
 
-import { GET, POST, DELETE } from '@/app/api/favorites/route'
-import { createClient } from '@/lib/supabase/server'
-import { NextRequest } from 'next/server'
+import { GET, POST, DELETE } from '@/app/api/favorites/route';
+import { createClient } from '@/lib/supabase/server';
+import { NextRequest } from 'next/server';
 
-function makeRequest(method: string, body?: object, params?: Record<string, string>) {
-  const url = new URL('http://localhost/api/favorites')
-  if (params) Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v))
+function makeRequest(
+  method: string,
+  body?: object,
+  params?: Record<string, string>,
+) {
+  const url = new URL('http://localhost/api/favorites');
+  if (params)
+    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
   return new NextRequest(url, {
     method,
     body: body ? JSON.stringify(body) : undefined,
     headers: { 'Content-Type': 'application/json' },
-  })
+  });
 }
 
-function makeSupabase({ user, insertError, deleteCount }: {
-  user: { id: string } | null
-  insertError?: { code: string; message: string }
-  deleteCount?: number
+function makeSupabase({
+  user,
+  insertError,
+  deleteCount,
+}: {
+  user: { id: string } | null;
+  insertError?: { code: string; message: string };
+  deleteCount?: number;
 }) {
-  const mockFavorites = [{ id: 'f1', animal_id: 'a1' }]
+  const mockFavorites = [{ id: 'f1', animal_id: 'a1' }];
   return {
-    auth: { getUser: vi.fn().mockResolvedValue({ data: { user }, error: null }) },
+    auth: {
+      getUser: vi.fn().mockResolvedValue({ data: { user }, error: null }),
+    },
     from: vi.fn().mockReturnValue({
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
@@ -682,40 +709,49 @@ function makeSupabase({ user, insertError, deleteCount }: {
       data: mockFavorites,
       error: null,
     }),
-  }
+  };
 }
 
 describe('GET /api/favorites', () => {
   it('미인증 → 401', async () => {
-    vi.mocked(createClient).mockResolvedValue(makeSupabase({ user: null }) as never)
-    const res = await GET(makeRequest('GET'))
-    expect(res.status).toBe(401)
-  })
-})
+    vi.mocked(createClient).mockResolvedValue(
+      makeSupabase({ user: null }) as never,
+    );
+    const res = await GET(makeRequest('GET'));
+    expect(res.status).toBe(401);
+  });
+});
 
 describe('POST /api/favorites', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => vi.clearAllMocks());
 
   it('미인증 → 401', async () => {
-    vi.mocked(createClient).mockResolvedValue(makeSupabase({ user: null }) as never)
-    const res = await POST(makeRequest('POST', { animal_id: 'a1' }))
-    expect(res.status).toBe(401)
-  })
+    vi.mocked(createClient).mockResolvedValue(
+      makeSupabase({ user: null }) as never,
+    );
+    const res = await POST(makeRequest('POST', { animal_id: 'a1' }));
+    expect(res.status).toBe(401);
+  });
 
   it('인증 후 추가 → 201', async () => {
-    vi.mocked(createClient).mockResolvedValue(makeSupabase({ user: { id: 'u1' } }) as never)
-    const res = await POST(makeRequest('POST', { animal_id: 'a1' }))
-    expect(res.status).toBe(201)
-  })
+    vi.mocked(createClient).mockResolvedValue(
+      makeSupabase({ user: { id: 'u1' } }) as never,
+    );
+    const res = await POST(makeRequest('POST', { animal_id: 'a1' }));
+    expect(res.status).toBe(201);
+  });
 
   it('중복 추가 → 409', async () => {
     vi.mocked(createClient).mockResolvedValue(
-      makeSupabase({ user: { id: 'u1' }, insertError: { code: '23505', message: 'duplicate' } }) as never
-    )
-    const res = await POST(makeRequest('POST', { animal_id: 'a1' }))
-    expect(res.status).toBe(409)
-  })
-})
+      makeSupabase({
+        user: { id: 'u1' },
+        insertError: { code: '23505', message: 'duplicate' },
+      }) as never,
+    );
+    const res = await POST(makeRequest('POST', { animal_id: 'a1' }));
+    expect(res.status).toBe(409);
+  });
+});
 ```
 
 - [ ] **Step 2: 테스트 실행 — 실패 확인**
@@ -730,59 +766,67 @@ Expected: FAIL
 
 ```typescript
 // src/app/api/favorites/route.ts
-import { createClient } from '@/lib/supabase/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 async function getAuthUser(supabase: Awaited<ReturnType<typeof createClient>>) {
-  const { data: { user } } = await supabase.auth.getUser()
-  return user
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user;
 }
 
 export async function GET(_request: NextRequest) {
-  const supabase = await createClient()
-  const user = await getAuthUser(supabase)
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const supabase = await createClient();
+  const user = await getAuthUser(supabase);
+  if (!user)
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { data, error } = await supabase
     .from('favorites')
     .select('id, animal_id, created_at')
-    .eq('user_id', user.id)
+    .eq('user_id', user.id);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ favorites: data ?? [] })
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ favorites: data ?? [] });
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const user = await getAuthUser(supabase)
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const supabase = await createClient();
+  const user = await getAuthUser(supabase);
+  if (!user)
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { animal_id } = await request.json()
+  const { animal_id } = await request.json();
   const { error } = await supabase
     .from('favorites')
-    .insert({ user_id: user.id, animal_id })
+    .insert({ user_id: user.id, animal_id });
 
   if (error?.code === '23505') {
-    return NextResponse.json({ error: 'Already favorited' }, { status: 409 })
+    return NextResponse.json({ error: 'Already favorited' }, { status: 409 });
   }
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ success: true }, { status: 201 })
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ success: true }, { status: 201 });
 }
 
 export async function DELETE(request: NextRequest) {
-  const supabase = await createClient()
-  const user = await getAuthUser(supabase)
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const supabase = await createClient();
+  const user = await getAuthUser(supabase);
+  if (!user)
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { animal_id } = await request.json()
+  const { animal_id } = await request.json();
   const { error } = await supabase
     .from('favorites')
     .delete()
     .eq('user_id', user.id)
-    .eq('animal_id', animal_id)
+    .eq('animal_id', animal_id);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ success: true })
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ success: true });
 }
 ```
 
@@ -806,21 +850,22 @@ git commit -m "feat: /api/favorites CRUD with RLS auth guard (TDD)"
 ## Task 6: Supabase Edge Function — 동물 데이터 동기화
 
 **Files:**
+
 - Create: `supabase/functions/sync-animals/index.ts`
 
 - [ ] **Step 1: Edge Function 작성**
 
 ```typescript
 // supabase/functions/sync-animals/index.ts
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-const ANIMAL_API_BASE = Deno.env.get('ANIMAL_API_BASE')!
-const ANIMAL_API_KEY = Deno.env.get('ANIMAL_API_KEY')!
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY')!
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+const ANIMAL_API_BASE = Deno.env.get('ANIMAL_API_BASE')!;
+const ANIMAL_API_KEY = Deno.env.get('ANIMAL_API_KEY')!;
+const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY')!;
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 async function fetchPage(pageNo: number) {
   const params = new URLSearchParams({
@@ -829,10 +874,10 @@ async function fetchPage(pageNo: number) {
     pageNo: String(pageNo),
     _type: 'json',
     state: 'protect',
-  })
-  const res = await fetch(`${ANIMAL_API_BASE}/abandonmentPublic?${params}`)
-  const json = await res.json()
-  return json.response?.body?.items?.item ?? []
+  });
+  const res = await fetch(`${ANIMAL_API_BASE}/abandonmentPublic?${params}`);
+  const json = await res.json();
+  return json.response?.body?.items?.item ?? [];
 }
 
 async function getEmbedding(text: string): Promise<number[]> {
@@ -843,29 +888,29 @@ async function getEmbedding(text: string): Promise<number[]> {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ model: 'text-embedding-3-small', input: text }),
-  })
-  const json = await res.json()
-  return json.data[0].embedding
+  });
+  const json = await res.json();
+  return json.data[0].embedding;
 }
 
 function buildEmbeddingText(item: Record<string, string>) {
   return [item.kindCd, item.age, item.sexCd, item.specialMark, item.weight]
     .filter(Boolean)
-    .join(' ')
+    .join(' ');
 }
 
 Deno.serve(async () => {
-  const today = new Date().toISOString().split('T')[0].replace(/-/g, '')
-  let pageNo = 1
-  let totalSynced = 0
+  const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
+  let pageNo = 1;
+  let totalSynced = 0;
 
   while (true) {
-    const items: Record<string, string>[] = await fetchPage(pageNo)
-    if (!items.length) break
+    const items: Record<string, string>[] = await fetchPage(pageNo);
+    if (!items.length) break;
 
     for (const item of items) {
-      const embText = buildEmbeddingText(item)
-      const embedding = await getEmbedding(embText)
+      const embText = buildEmbeddingText(item);
+      const embedding = await getEmbedding(embText);
 
       const row = {
         id: item.desertionNo,
@@ -884,13 +929,13 @@ Deno.serve(async () => {
         embedding,
         synced_at: new Date().toISOString(),
         stale: false,
-      }
+      };
 
-      await supabase.from('animals').upsert(row, { onConflict: 'id' })
-      totalSynced++
+      await supabase.from('animals').upsert(row, { onConflict: 'id' });
+      totalSynced++;
     }
 
-    pageNo++
+    pageNo++;
   }
 
   // 만료 처리
@@ -898,12 +943,12 @@ Deno.serve(async () => {
     .from('animals')
     .update({ status: 'expired' })
     .lt('notice_edt', today)
-    .eq('status', '보호중')
+    .eq('status', '보호중');
 
   return new Response(JSON.stringify({ synced: totalSynced }), {
     headers: { 'Content-Type': 'application/json' },
-  })
-})
+  });
+});
 ```
 
 - [ ] **Step 2: Edge Function 환경변수 등록**
@@ -938,27 +983,31 @@ Expected: `{"synced": N}` (N > 0)
 ```json
 // vercel.json
 {
-  "crons": [{
-    "path": "/api/cron/sync",
-    "schedule": "0 18 * * *"
-  }]
+  "crons": [
+    {
+      "path": "/api/cron/sync",
+      "schedule": "0 18 * * *"
+    }
+  ]
 }
 ```
 
 ```typescript
 // src/app/api/cron/sync/route.ts
-import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server';
 
 export async function GET() {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/sync-animals`,
     {
       method: 'POST',
-      headers: { Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}` },
-    }
-  )
-  const data = await res.json()
-  return NextResponse.json(data)
+      headers: {
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+      },
+    },
+  );
+  const data = await res.json();
+  return NextResponse.json(data);
 }
 ```
 
@@ -974,6 +1023,7 @@ git commit -m "feat: supabase edge function for animal data sync with embeddings
 ## Task 7: 홈 페이지 — 지역 검색 + 동물 목록
 
 **Files:**
+
 - Create: `src/components/RegionSelector.tsx`
 - Create: `src/components/AnimalCard.tsx`
 - Create: `src/components/AnimalGrid.tsx`
@@ -1171,7 +1221,7 @@ export default function HomePage() {
 
 ```typescript
 // next.config.ts
-import type { NextConfig } from 'next'
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
@@ -1180,9 +1230,9 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '*.go.kr' },
     ],
   },
-}
+};
 
-export default nextConfig
+export default nextConfig;
 ```
 
 - [ ] **Step 7: 로컬에서 홈 페이지 확인**
@@ -1204,6 +1254,7 @@ git commit -m "feat: home page with region selector and animal grid"
 ## Task 8: 동물 상세 페이지 + 찜하기 버튼 + 문의 폼
 
 **Files:**
+
 - Create: `src/app/animals/[id]/page.tsx`
 - Create: `src/components/FavoriteButton.tsx`
 - Create: `src/components/InquiryForm.tsx`
@@ -1214,24 +1265,27 @@ git commit -m "feat: home page with region selector and animal grid"
 
 ```typescript
 // src/app/api/animals/[id]/route.ts
-import { createClient } from '@/lib/supabase/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  const supabase = await createClient()
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from('animals')
     .select('*')
     .eq('id', id)
-    .single()
+    .single();
 
   if (error || !data) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  return NextResponse.json({ animal: data })
+  return NextResponse.json({ animal: data });
 }
 ```
 
@@ -1294,18 +1348,22 @@ export function FavoriteButton({ animalId, redirectTo }: Props) {
 
 ```typescript
 // src/app/api/inquiry/route.ts
-import { Resend } from 'resend'
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { Resend } from 'resend';
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user)
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { animal_id, animal_kind, care_nm, care_tel, message } = await request.json()
+  const { animal_id, animal_kind, care_nm, care_tel, message } =
+    await request.json();
 
   const { error } = await resend.emails.send({
     from: 'no-reply@yourdomain.com',
@@ -1323,10 +1381,11 @@ export async function POST(request: NextRequest) {
       <hr/>
       <p style="color:#888">센터에 직접 전화하거나 방문 예약 후 입양 절차를 진행하세요.</p>
     `,
-  })
+  });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ success: true })
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ success: true });
 }
 ```
 
@@ -1482,6 +1541,7 @@ git commit -m "feat: animal detail page with favorites and inquiry form"
 ## Task 9: /api/match 라우트 + AI 매칭 (TDD)
 
 **Files:**
+
 - Create: `src/lib/openai.ts`
 - Create: `src/app/api/match/route.ts`
 - Create: `tests/api/match.test.ts`
@@ -1490,16 +1550,16 @@ git commit -m "feat: animal detail page with favorites and inquiry form"
 
 ```typescript
 // src/lib/openai.ts
-import OpenAI from 'openai'
+import OpenAI from 'openai';
 
-export const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+export const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 export async function getEmbedding(text: string): Promise<number[]> {
   const res = await openai.embeddings.create({
     model: 'text-embedding-3-small',
     input: text,
-  })
-  return res.data[0].embedding
+  });
+  return res.data[0].embedding;
 }
 ```
 
@@ -1507,17 +1567,17 @@ export async function getEmbedding(text: string): Promise<number[]> {
 
 ```typescript
 // tests/api/match.test.ts
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }))
+vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }));
 vi.mock('@/lib/openai', () => ({
   getEmbedding: vi.fn().mockResolvedValue(new Array(1536).fill(0.1)),
-}))
+}));
 
-import { POST } from '@/app/api/match/route'
-import { createClient } from '@/lib/supabase/server'
-import { getEmbedding } from '@/lib/openai'
-import { NextRequest } from 'next/server'
+import { POST } from '@/app/api/match/route';
+import { createClient } from '@/lib/supabase/server';
+import { getEmbedding } from '@/lib/openai';
+import { NextRequest } from 'next/server';
 
 const validSurvey = {
   housing: '아파트',
@@ -1526,59 +1586,63 @@ const validSurvey = {
   family: '혼자',
   size_pref: '소형',
   age_pref: '어린',
-}
+};
 
 function makeRequest(body: object) {
   return new NextRequest('http://localhost/api/match', {
     method: 'POST',
     body: JSON.stringify(body),
     headers: { 'Content-Type': 'application/json' },
-  })
+  });
 }
 
 function makeSupabase(results: unknown[]) {
   return {
     rpc: vi.fn().mockResolvedValue({ data: results, error: null }),
-  }
+  };
 }
 
 describe('POST /api/match', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => vi.clearAllMocks());
 
   it('유효한 설문 → OpenAI 호출 + 상위 10개 반환', async () => {
-    const mockResults = Array.from({ length: 10 }, (_, i) => ({ id: String(i) }))
-    vi.mocked(createClient).mockResolvedValue(makeSupabase(mockResults) as never)
+    const mockResults = Array.from({ length: 10 }, (_, i) => ({
+      id: String(i),
+    }));
+    vi.mocked(createClient).mockResolvedValue(
+      makeSupabase(mockResults) as never,
+    );
 
-    const res = await POST(makeRequest(validSurvey))
-    const body = await res.json()
+    const res = await POST(makeRequest(validSurvey));
+    const body = await res.json();
 
-    expect(res.status).toBe(200)
-    expect(getEmbedding).toHaveBeenCalledOnce()
-    expect(body.animals).toHaveLength(10)
-  })
+    expect(res.status).toBe(200);
+    expect(getEmbedding).toHaveBeenCalledOnce();
+    expect(body.animals).toHaveLength(10);
+  });
 
   it('OpenAI 장애 → 500 대신 graceful 에러 응답', async () => {
-    vi.mocked(getEmbedding).mockRejectedValueOnce(new Error('OpenAI down'))
-    vi.mocked(createClient).mockResolvedValue(makeSupabase([]) as never)
+    vi.mocked(getEmbedding).mockRejectedValueOnce(new Error('OpenAI down'));
+    vi.mocked(createClient).mockResolvedValue(makeSupabase([]) as never);
 
-    const res = await POST(makeRequest(validSurvey))
-    expect(res.status).toBe(503)
-    const body = await res.json()
-    expect(body.error).toBeTruthy()
-  })
+    const res = await POST(makeRequest(validSurvey));
+    expect(res.status).toBe(503);
+    const body = await res.json();
+    expect(body.error).toBeTruthy();
+  });
 
   it('지역 미선택 → 전국 기준 쿼리 실행', async () => {
-    vi.mocked(createClient).mockResolvedValue(makeSupabase([]) as never)
+    vi.mocked(createClient).mockResolvedValue(makeSupabase([]) as never);
 
-    const res = await POST(makeRequest(validSurvey))
-    expect(res.status).toBe(200)
-    const supabase = vi.mocked(createClient).mock.results[0].value
+    const res = await POST(makeRequest(validSurvey));
+    expect(res.status).toBe(200);
+    const supabase = vi.mocked(createClient).mock.results[0].value;
     expect(supabase.rpc).toHaveBeenCalledWith(
       'match_animals',
-      expect.objectContaining({ region_filter: null })
-    )
-  })
-})
+      expect.objectContaining({ region_filter: null }),
+    );
+  });
+});
 ```
 
 - [ ] **Step 3: 테스트 실패 확인**
@@ -1627,10 +1691,10 @@ $$;
 
 ```typescript
 // src/app/api/match/route.ts
-import { createClient } from '@/lib/supabase/server'
-import { getEmbedding } from '@/lib/openai'
-import { NextRequest, NextResponse } from 'next/server'
-import { SurveyAnswer } from '@/types'
+import { createClient } from '@/lib/supabase/server';
+import { getEmbedding } from '@/lib/openai';
+import { NextRequest, NextResponse } from 'next/server';
+import { SurveyAnswer } from '@/types';
 
 function surveyToText(survey: SurveyAnswer): string {
   return [
@@ -1640,29 +1704,36 @@ function surveyToText(survey: SurveyAnswer): string {
     survey.family,
     `${survey.size_pref} 크기`,
     `${survey.age_pref} 나이`,
-  ].join(' ')
+  ].join(' ');
 }
 
 export async function POST(request: NextRequest) {
-  const survey: SurveyAnswer = await request.json()
+  const survey: SurveyAnswer = await request.json();
 
-  let embedding: number[]
+  let embedding: number[];
   try {
-    embedding = await getEmbedding(surveyToText(survey))
+    embedding = await getEmbedding(surveyToText(survey));
   } catch {
-    return NextResponse.json({ error: 'AI 서비스에 일시적 장애가 발생했어요. 잠시 후 다시 시도해주세요.' }, { status: 503 })
+    return NextResponse.json(
+      {
+        error:
+          'AI 서비스에 일시적 장애가 발생했어요. 잠시 후 다시 시도해주세요.',
+      },
+      { status: 503 },
+    );
   }
 
-  const supabase = await createClient()
+  const supabase = await createClient();
   const { data, error } = await supabase.rpc('match_animals', {
     query_embedding: embedding,
     match_count: 50,
     region_filter: survey.region_cd ?? null,
-  })
+  });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 500 });
 
-  return NextResponse.json({ animals: (data ?? []).slice(0, 10) })
+  return NextResponse.json({ animals: (data ?? []).slice(0, 10) });
 }
 ```
 
@@ -1686,6 +1757,7 @@ git commit -m "feat: AI matching with pgvector RPC and embedding (TDD)"
 ## Task 10: AI 매칭 설문 UI
 
 **Files:**
+
 - Create: `src/app/match/page.tsx`
 - Create: `src/components/MatchSurvey.tsx`
 - Create: `src/components/SwipeCard.tsx`
@@ -1908,6 +1980,7 @@ git commit -m "feat: AI matching survey UI with step-by-step questionnaire"
 ## Task 11: /api/chat + AI 챗봇 UI (TDD)
 
 **Files:**
+
 - Create: `src/app/api/chat/route.ts`
 - Create: `src/components/ChatWidget.tsx`
 - Create: `src/app/chat/page.tsx`
@@ -1917,7 +1990,7 @@ git commit -m "feat: AI matching survey UI with step-by-step questionnaire"
 
 ```typescript
 // tests/api/chat.test.ts
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi } from 'vitest';
 
 vi.mock('openai', () => ({
   default: vi.fn().mockImplementation(() => ({
@@ -1925,30 +1998,32 @@ vi.mock('openai', () => ({
       completions: {
         create: vi.fn().mockResolvedValue({
           [Symbol.asyncIterator]: async function* () {
-            yield { choices: [{ delta: { content: '안녕' } }] }
-            yield { choices: [{ delta: { content: '하세요' } }] }
+            yield { choices: [{ delta: { content: '안녕' } }] };
+            yield { choices: [{ delta: { content: '하세요' } }] };
           },
         }),
       },
     },
   })),
-}))
+}));
 
-import { POST } from '@/app/api/chat/route'
-import { NextRequest } from 'next/server'
+import { POST } from '@/app/api/chat/route';
+import { NextRequest } from 'next/server';
 
 describe('POST /api/chat', () => {
   it('유효한 메시지 → 스트리밍 응답 헤더 반환', async () => {
     const req = new NextRequest('http://localhost/api/chat', {
       method: 'POST',
-      body: JSON.stringify({ messages: [{ role: 'user', content: '입양 절차가 어떻게 돼요?' }] }),
+      body: JSON.stringify({
+        messages: [{ role: 'user', content: '입양 절차가 어떻게 돼요?' }],
+      }),
       headers: { 'Content-Type': 'application/json' },
-    })
-    const res = await POST(req)
-    expect(res.headers.get('content-type')).toContain('text/plain')
-    expect(res.status).toBe(200)
-  })
-})
+    });
+    const res = await POST(req);
+    expect(res.headers.get('content-type')).toContain('text/plain');
+    expect(res.status).toBe(200);
+  });
+});
 ```
 
 - [ ] **Step 2: 테스트 실패 확인**
@@ -1963,26 +2038,26 @@ Expected: FAIL
 
 ```typescript
 // src/app/api/chat/route.ts
-import { openai } from '@ai-sdk/openai'
-import { streamText } from 'ai'
-import { NextRequest } from 'next/server'
+import { openai } from '@ai-sdk/openai';
+import { streamText } from 'ai';
+import { NextRequest } from 'next/server';
 
 const SYSTEM_PROMPT = `당신은 한국 유기동물 입양 전문 상담사입니다.
 입양 절차, 준비물, 비용, 입양 후 관리에 대해 친절하고 정확하게 안내하세요.
 한국 동물보호법 기준으로 답변하고, 모르는 내용은 솔직하게 모른다고 말하세요.
-답변은 간결하고 명확하게, 2-3단락 이내로 작성하세요.`
+답변은 간결하고 명확하게, 2-3단락 이내로 작성하세요.`;
 
 export async function POST(request: NextRequest) {
-  const { messages } = await request.json()
+  const { messages } = await request.json();
 
   const result = streamText({
     model: openai('gpt-4o-mini'),
     system: SYSTEM_PROMPT,
     messages,
     maxTokens: 500,
-  })
+  });
 
-  return result.toTextStreamResponse()
+  return result.toTextStreamResponse();
 }
 ```
 
@@ -2112,6 +2187,7 @@ git commit -m "feat: AI chatbot with GPT-4o-mini streaming via Vercel AI SDK (TD
 ## Task 12: E2E 테스트 (Playwright)
 
 **Files:**
+
 - Create: `playwright.config.ts`
 - Create: `tests/e2e/search.spec.ts`
 - Create: `tests/e2e/favorites.spec.ts`
@@ -2121,7 +2197,7 @@ git commit -m "feat: AI chatbot with GPT-4o-mini streaming via Vercel AI SDK (TD
 
 ```typescript
 // playwright.config.ts
-import { defineConfig, devices } from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -2142,63 +2218,65 @@ export default defineConfig({
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
   },
-})
+});
 ```
 
 - [ ] **Step 2: E2E 테스트 1 — 검색 → 상세**
 
 ```typescript
 // tests/e2e/search.spec.ts
-import { test, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test';
 
 test('검색 → 상세 흐름', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/');
 
   // 시/도 드롭다운 선택
-  await page.getByRole('combobox').click()
-  await page.getByRole('option', { name: '서울특별시' }).click()
+  await page.getByRole('combobox').click();
+  await page.getByRole('option', { name: '서울특별시' }).click();
 
   // 동물 카드 렌더링 대기 (최대 5초)
-  await expect(page.locator('[data-testid="animal-card"], a[href^="/animals/"]').first()).toBeVisible({ timeout: 5000 })
+  await expect(
+    page.locator('[data-testid="animal-card"], a[href^="/animals/"]').first(),
+  ).toBeVisible({ timeout: 5000 });
 
   // 첫 번째 카드 클릭 → 상세 진입
-  await page.locator('a[href^="/animals/"]').first().click()
+  await page.locator('a[href^="/animals/"]').first().click();
 
   // 상세 정보 확인
-  await expect(page).toHaveURL(/\/animals\//)
-  await expect(page.getByRole('heading')).toBeVisible()
-})
+  await expect(page).toHaveURL(/\/animals\//);
+  await expect(page.getByRole('heading')).toBeVisible();
+});
 ```
 
 - [ ] **Step 3: E2E 테스트 2 — 찜하기 → 로그인 모달**
 
 ```typescript
 // tests/e2e/favorites.spec.ts
-import { test, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test';
 
 test('미로그인 찜하기 → 로그인 모달 표시', async ({ page }) => {
   // 상세 페이지 직접 접근 (첫 번째 동물 ID는 테스트 DB에 존재해야 함)
-  await page.goto('/')
-  await page.locator('a[href^="/animals/"]').first().click()
-  await expect(page).toHaveURL(/\/animals\//)
+  await page.goto('/');
+  await page.locator('a[href^="/animals/"]').first().click();
+  await expect(page).toHaveURL(/\/animals\//);
 
   // 찜하기 버튼 클릭
-  await page.getByRole('button', { name: /찜하기/ }).click()
+  await page.getByRole('button', { name: /찜하기/ }).click();
 
   // 로그인 모달 표시 확인
-  await expect(page.getByRole('dialog')).toBeVisible()
-  await expect(page.getByText('찜하기는 로그인이 필요해요')).toBeVisible()
-})
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByText('찜하기는 로그인이 필요해요')).toBeVisible();
+});
 ```
 
 - [ ] **Step 4: E2E 테스트 3 — AI 매칭 설문 → 추천 결과**
 
 ```typescript
 // tests/e2e/match.spec.ts
-import { test, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test';
 
 test('AI 매칭 설문 → 추천 결과 2초 이내', async ({ page }) => {
-  await page.goto('/match')
+  await page.goto('/match');
 
   // 6단계 설문 순차 완료
   const selections = [
@@ -2208,21 +2286,21 @@ test('AI 매칭 설문 → 추천 결과 2초 이내', async ({ page }) => {
     '혼자',
     '소형',
     '상관없음',
-  ]
+  ];
 
   for (const label of selections) {
-    await page.getByRole('button', { name: new RegExp(label) }).click()
+    await page.getByRole('button', { name: new RegExp(label) }).click();
   }
 
   // 결과 페이지 확인 (2초 이내)
-  const start = Date.now()
-  await expect(page.getByText(/추천 결과/)).toBeVisible({ timeout: 2000 })
-  const elapsed = Date.now() - start
-  expect(elapsed).toBeLessThan(2000)
+  const start = Date.now();
+  await expect(page.getByText(/추천 결과/)).toBeVisible({ timeout: 2000 });
+  const elapsed = Date.now() - start;
+  expect(elapsed).toBeLessThan(2000);
 
   // 카드 렌더링 확인
-  await expect(page.locator('a[href^="/animals/"]').first()).toBeVisible()
-})
+  await expect(page.locator('a[href^="/animals/"]').first()).toBeVisible();
+});
 ```
 
 - [ ] **Step 5: Playwright 설치 및 실행**
@@ -2246,6 +2324,7 @@ git commit -m "test: playwright E2E tests for search, favorites, and AI matching
 ## Task 13: 반응형 디자인 + 로딩/에러/빈 상태 점검
 
 **Files:**
+
 - Modify: `src/app/page.tsx`
 - Modify: `src/app/animals/[id]/page.tsx`
 - Modify: `src/components/AnimalGrid.tsx`
@@ -2302,6 +2381,7 @@ git commit -m "fix: responsive layout tweaks and image error fallback"
 ## Task 14: Vercel 배포
 
 **Files:**
+
 - Create: `vercel.json`
 - Modify: `.env.example`
 
@@ -2359,6 +2439,7 @@ git commit -m "chore: add vercel cron config for daily animal sync"
 ```
 
 README에 포함할 내용:
+
 - 서비스 설명 1단락
 - 데모 GIF (Loom 또는 QuickTime으로 녹화)
 - 기술 스택 테이블
@@ -2396,13 +2477,13 @@ git commit -m "chore: final cleanup and test confirmation"
 
 ## GSTACK REVIEW REPORT
 
-| Review | Trigger | Why | Runs | Status | Findings |
-|--------|---------|-----|------|--------|----------|
-| CEO Review | `/plan-ceo-review` | Scope & strategy | 0 | — | — |
-| Codex Review | `/codex review` | Independent 2nd opinion | 0 | — | — |
-| Eng Review | `/plan-eng-review` | Architecture & tests (required) | 0 | — | — |
-| Design Review | `/plan-design-review` | UI/UX gaps | 0 | — | — |
-| DX Review | `/plan-devex-review` | Developer experience gaps | 0 | — | — |
+| Review        | Trigger               | Why                             | Runs | Status | Findings |
+| ------------- | --------------------- | ------------------------------- | ---- | ------ | -------- |
+| CEO Review    | `/plan-ceo-review`    | Scope & strategy                | 0    | —      | —        |
+| Codex Review  | `/codex review`       | Independent 2nd opinion         | 0    | —      | —        |
+| Eng Review    | `/plan-eng-review`    | Architecture & tests (required) | 0    | —      | —        |
+| Design Review | `/plan-design-review` | UI/UX gaps                      | 0    | —      | —        |
+| DX Review     | `/plan-devex-review`  | Developer experience gaps       | 0    | —      | —        |
 
 **VERDICT:** NO REVIEWS YET — run `/autoplan` for full review pipeline, or individual reviews above.
 
