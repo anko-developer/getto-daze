@@ -14,8 +14,20 @@ function surveyToText(survey: SurveyAnswer): string {
   ].join(' ')
 }
 
+const REQUIRED_FIELDS: (keyof SurveyAnswer)[] = ['housing', 'walk_time', 'family', 'size_pref', 'age_pref']
+
 export async function POST(request: NextRequest) {
-  const survey: SurveyAnswer = await request.json()
+  let survey: SurveyAnswer
+  try {
+    survey = await request.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
+  }
+
+  const missing = REQUIRED_FIELDS.filter((f) => survey[f] === undefined || survey[f] === null)
+  if (missing.length > 0) {
+    return NextResponse.json({ error: `Missing fields: ${missing.join(', ')}` }, { status: 400 })
+  }
 
   let embedding: number[]
   try {
