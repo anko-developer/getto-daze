@@ -38,10 +38,17 @@ export default function MatchPage() {
 
   if (phase === 'survey') {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        <h1 className="text-2xl font-bold text-center mb-8">나에게 맞는 동물 찾기</h1>
+      <div className="max-w-2xl mx-auto px-6 py-16">
+        <div className="mb-12 text-center">
+          <h1 className="text-3xl font-bold text-[#222222]" style={{ letterSpacing: '-0.44px' }}>
+            나에게 맞는 동물 찾기
+          </h1>
+          <p className="text-[#6a6a6a] mt-2 text-sm">AI가 생활 패턴에 맞는 친구를 추천해드려요</p>
+        </div>
         {error && (
-          <div className="mb-6 text-center text-sm text-destructive">{error}</div>
+          <div className="mb-6 px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm text-center">
+            {error}
+          </div>
         )}
         <MatchSurvey onComplete={handleComplete} />
       </div>
@@ -50,27 +57,33 @@ export default function MatchPage() {
 
   if (phase === 'loading') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <span className="text-5xl animate-bounce mb-4">🐾</span>
-        <p className="text-lg font-medium">AI가 나에게 맞는 동물을 찾고 있어요...</p>
+      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+        <span className="text-6xl animate-bounce mb-6">🐾</span>
+        <p className="text-lg font-semibold text-[#222222]">AI가 나에게 맞는 동물을 찾고 있어요</p>
+        <p className="text-sm text-[#6a6a6a] mt-2">잠시만 기다려주세요</p>
       </div>
     )
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">추천 결과 ({animals.length}마리)</h1>
+    <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-[#222222]" style={{ letterSpacing: '-0.44px' }}>
+            추천 결과
+          </h1>
+          <p className="text-[#6a6a6a] text-sm mt-1">{animals.length}마리의 친구가 기다리고 있어요</p>
+        </div>
         <button
           onClick={() => setPhase('survey')}
-          className="text-sm text-muted-foreground underline"
+          className="px-4 py-2 rounded-lg border border-[#dddddd] text-sm font-medium text-[#222222] hover:border-[#222222] transition-colors"
         >
           다시 하기
         </button>
       </div>
       <AnimalGrid animals={animals} />
-      <div className="mt-8 text-center">
-        <Link href="/" className="text-sm text-muted-foreground underline">
+      <div className="mt-10 text-center">
+        <Link href="/" className="text-sm text-[#6a6a6a] underline underline-offset-2 hover:text-[#222222] transition-colors">
           전체 목록 보기
         </Link>
       </div>

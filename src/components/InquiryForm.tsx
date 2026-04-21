@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { Animal } from '@/types'
 
 type Props = { animal: Animal }
@@ -43,28 +42,33 @@ export function InquiryForm({ animal }: Props) {
   if (sent) {
     return (
       <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-green-800 text-sm">
-        문의 내용을 이메일로 보내드렸어요. 센터에 직접 전화하세요: <strong>{animal.care_tel}</strong>
+        문의 내용을 이메일로 보내드렸어요. 센터에 직접 전화하세요:{' '}
+        <strong>{animal.care_tel}</strong>
       </div>
     )
   }
 
   return (
-    <form onSubmit={submit} className="space-y-3">
-      <p className="text-sm text-muted-foreground">
+    <form onSubmit={submit} className="space-y-4">
+      <p className="text-sm text-[#6a6a6a]">
         작성하신 내용과 센터 전화번호를 이메일로 보내드립니다.<br />
-        센터에는 <strong>{animal.care_tel}</strong> 로 직접 연락해주세요.
+        센터에는 <strong className="text-[#222222]">{animal.care_tel}</strong> 로 직접 연락해주세요.
       </p>
       <textarea
-        className="w-full border border-border rounded-lg p-3 text-sm resize-none h-28 focus:outline-none focus:ring-2 focus:ring-ring"
+        className="w-full border border-[#dddddd] rounded-xl p-4 text-sm resize-none h-28 focus:outline-none focus:border-[#222222] transition-colors text-[#222222] placeholder:text-[#6a6a6a]"
         placeholder="입양 의향과 간단한 자기소개를 남겨보세요"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         required
       />
-      {error && <p className="text-sm text-destructive">{error}</p>}
-      <Button type="submit" disabled={loading || !message} className="w-full">
+      {error && <p className="text-sm text-[#c13515]">{error}</p>}
+      <button
+        type="submit"
+        disabled={loading || !message}
+        className="w-full py-3 rounded-lg bg-[#222222] text-white text-sm font-medium hover:bg-[#ff385c] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      >
         {loading ? '전송 중...' : '문의 내용 이메일로 받기'}
-      </Button>
+      </button>
     </form>
   )
 }

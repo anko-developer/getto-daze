@@ -31,9 +31,9 @@ export async function POST(request: NextRequest) {
     await request.json();
 
   const { error } = await getResendClient().emails.send({
-    from: 'no-reply@gettodaze.vercel.app',
+    from: 'getto daze <onboarding@resend.dev>',
     to: user.email!,
-    subject: `[getto daze] ${escapeHtml(String(animal_kind))} 입양 문의 내용`,
+    subject: `[getto daze] ${escapeHtml(String(animal_kind).replace(/\s+/g, ' ').trim())} 입양 문의 내용`,
     html: `
       <h2>문의하신 내용을 저장했어요</h2>
       <p><strong>동물 ID:</strong> ${escapeHtml(String(animal_id))}</p>

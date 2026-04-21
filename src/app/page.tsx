@@ -5,7 +5,6 @@ import { AnimalGrid } from '@/components/AnimalGrid';
 import { StaleBanner } from '@/components/StaleBanner';
 import { Animal } from '@/types';
 import Link from 'next/link';
-import { buttonVariants } from '@/components/ui/button';
 
 export default function HomePage() {
   const [region, setRegion] = useState('all');
@@ -28,31 +27,37 @@ export default function HomePage() {
   }, [fetchAnimals]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">getto daze</h1>
-        <p className="text-muted-foreground">
-          지역 유기동물을 찾고, AI로 나에게 맞는 친구를 만나보세요
-        </p>
-      </header>
-
-      <div className="flex flex-wrap gap-3 mb-6 items-center">
-        <RegionSelector value={region} onChange={setRegion} />
-        <Link href="/match" className={buttonVariants({ variant: 'outline' })}>
-          🐶 AI 매칭 시작
-        </Link>
-        <Link href="/chat" className={buttonVariants({ variant: 'ghost' })}>
-          💬 입양 상담
-        </Link>
+    <div>
+      {/* Hero */}
+      <div className="bg-white border-b border-[#dddddd] px-6 py-10">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold text-[#222222] mb-1" style={{ letterSpacing: '-0.44px' }}>
+            새 가족을 기다리는 친구들
+          </h1>
+          <p className="text-[#6a6a6a] text-sm mb-6">
+            지역 유기동물을 찾고, AI로 나에게 맞는 친구를 만나보세요
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <RegionSelector value={region} onChange={setRegion} />
+            <Link
+              href="/match"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#222222] text-white text-sm font-medium hover:bg-[#ff385c] transition-colors"
+            >
+              AI 매칭 시작
+            </Link>
+          </div>
+        </div>
       </div>
 
-      {stale && (
-        <div className="mb-4">
-          <StaleBanner />
-        </div>
-      )}
-
-      <AnimalGrid animals={animals} loading={loading} />
+      {/* Grid */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {stale && (
+          <div className="mb-6">
+            <StaleBanner />
+          </div>
+        )}
+        <AnimalGrid animals={animals} loading={loading} />
+      </div>
     </div>
   );
 }

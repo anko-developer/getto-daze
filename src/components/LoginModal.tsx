@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 
 type Props = {
@@ -27,14 +26,20 @@ export function LoginModal({ open, onClose, redirectTo = '/' }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-sm">
+      <DialogContent className="sm:max-w-sm rounded-[20px] border-[#dddddd]">
         <DialogHeader>
-          <DialogTitle>찜하기는 로그인이 필요해요</DialogTitle>
+          <DialogTitle className="text-[#222222] font-bold" style={{ letterSpacing: '-0.18px' }}>
+            로그인이 필요해요
+          </DialogTitle>
         </DialogHeader>
-        {error && <p className="text-sm text-destructive mt-2">{error}</p>}
-        <Button onClick={loginWithGoogle} className="w-full mt-4">
+        <p className="text-sm text-[#6a6a6a] mt-1">찜하기는 로그인 후 이용할 수 있어요.</p>
+        {error && <p className="text-sm text-[#c13515] mt-2">{error}</p>}
+        <button
+          onClick={loginWithGoogle}
+          className="w-full mt-4 py-3 rounded-lg bg-[#222222] text-white text-sm font-medium hover:bg-[#ff385c] transition-colors"
+        >
           Google로 계속하기
-        </Button>
+        </button>
       </DialogContent>
     </Dialog>
   )
