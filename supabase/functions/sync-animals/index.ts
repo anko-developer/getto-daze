@@ -10,13 +10,12 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 async function fetchPage(pageNo: number) {
   const params = new URLSearchParams({
-    serviceKey: ANIMAL_API_KEY,
     numOfRows: '1000',
     pageNo: String(pageNo),
     _type: 'json',
     state: 'protect',
   })
-  const res = await fetch(`${ANIMAL_API_BASE}/abandonmentPublic?${params}`)
+  const res = await fetch(`${ANIMAL_API_BASE}/abandonmentPublic_v2?serviceKey=${encodeURIComponent(ANIMAL_API_KEY.trim())}&${params}`)
   const json = await res.json()
   return json.response?.body?.items?.item ?? []
 }
@@ -31,6 +30,7 @@ async function getEmbedding(text: string): Promise<number[]> {
     body: JSON.stringify({ model: 'text-embedding-3-small', input: text }),
   })
   const json = await res.json()
+  if (!json.data?.[0]?.embedding) throw new Error(`OpenAI error: ${JSON.stringify(json)}`)
   return json.data[0].embedding
 }
 

@@ -5,7 +5,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: '겟토 데이즈 — 유기동물 입양',
+  title: 'getto daze — 유기동물 입양',
   description: '지역 기반 유기동물 검색, AI 매칭, 입양 안내',
 };
 
@@ -16,7 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" className="h-full antialiased">
-      <body className={`${inter.className} min-h-full flex flex-col`}>{children}</body>
+      <body className={`${inter.className} min-h-full flex flex-col`}>
+        {children}
+      </body>
     </html>
   );
 }

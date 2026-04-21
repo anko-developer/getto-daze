@@ -1195,7 +1195,7 @@ export default function HomePage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">겟토 데이즈</h1>
+        <h1 className="text-3xl font-bold mb-2">getto daze</h1>
         <p className="text-muted-foreground">지역 유기동물을 찾고, AI로 나에게 맞는 친구를 만나보세요</p>
       </header>
 
@@ -1368,7 +1368,7 @@ export async function POST(request: NextRequest) {
   const { error } = await resend.emails.send({
     from: 'no-reply@yourdomain.com',
     to: user.email!,
-    subject: `[겟토 데이즈] ${animal_kind} 입양 문의 내용`,
+    subject: `[getto daze] ${animal_kind} 입양 문의 내용`,
     html: `
       <h2>문의하신 내용을 저장했어요</h2>
       <p><strong>동물 ID:</strong> ${animal_id}</p>

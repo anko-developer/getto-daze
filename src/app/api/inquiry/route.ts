@@ -1,13 +1,13 @@
-import { Resend } from 'resend'
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { Resend } from 'resend';
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
 
-let _resend: Resend | null = null
+let _resend: Resend | null = null;
 function getResendClient(): Resend {
   if (!_resend) {
-    _resend = new Resend(process.env.RESEND_API_KEY)
+    _resend = new Resend(process.env.RESEND_API_KEY);
   }
-  return _resend
+  return _resend;
 }
 
 function escapeHtml(str: string): string {
@@ -16,20 +16,24 @@ function escapeHtml(str: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
+    .replace(/'/g, '&#x27;');
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user)
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { animal_id, animal_kind, care_nm, care_tel, message } = await request.json()
+  const { animal_id, animal_kind, care_nm, care_tel, message } =
+    await request.json();
 
   const { error } = await getResendClient().emails.send({
     from: 'no-reply@gettodaze.vercel.app',
     to: user.email!,
-    subject: `[겟토 데이즈] ${escapeHtml(String(animal_kind))} 입양 문의 내용`,
+    subject: `[getto daze] ${escapeHtml(String(animal_kind))} 입양 문의 내용`,
     html: `
       <h2>문의하신 내용을 저장했어요</h2>
       <p><strong>동물 ID:</strong> ${escapeHtml(String(animal_id))}</p>
@@ -42,8 +46,9 @@ export async function POST(request: NextRequest) {
       <hr/>
       <p style="color:#888">센터에 직접 전화하거나 방문 예약 후 입양 절차를 진행하세요.</p>
     `,
-  })
+  });
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ success: true })
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ success: true });
 }
