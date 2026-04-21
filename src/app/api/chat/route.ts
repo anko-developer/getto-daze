@@ -17,5 +17,5 @@ export async function POST(request: NextRequest) {
     maxOutputTokens: 500,
   })
 
-  return result.toTextStreamResponse()
+  return result.toDataStreamResponse()
 }
