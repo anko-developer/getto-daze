@@ -27,12 +27,15 @@ export async function POST(request: NextRequest) {
   if (!user)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  if (!user.email)
+    return NextResponse.json({ error: '이메일 정보가 없어요' }, { status: 400 });
+
   const { animal_id, animal_kind, care_nm, care_tel, message } =
     await request.json();
 
   const { error } = await getResendClient().emails.send({
     from: 'getto daze <onboarding@resend.dev>',
-    to: user.email!,
+    to: user.email,
     subject: `[getto daze] ${escapeHtml(String(animal_kind).replace(/\s+/g, ' ').trim())} 입양 문의 내용`,
     html: `
       <h2>문의하신 내용을 저장했어요</h2>
