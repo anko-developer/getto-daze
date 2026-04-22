@@ -23,8 +23,10 @@ export function RegionSelector({ value, onChange }: Props) {
             : (SIDO_LIST.find((s) => s.code === value)?.name ?? '시/도 선택')}
         </SelectValue>
       </SelectTrigger>
-      <SelectContent className="rounded-xl border-[#dddddd]">
-        <SelectItem value="all" className="text-sm">전국</SelectItem>
+      <SelectContent className="border-[#dddddd]">
+        <SelectItem value="all" className="text-sm">
+          전국
+        </SelectItem>
         {SIDO_LIST.map((sido) => (
           <SelectItem key={sido.code} value={sido.code} className="text-sm">
             {sido.name}
