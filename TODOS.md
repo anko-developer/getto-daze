@@ -6,13 +6,8 @@ Deferred items from /plan-ceo-review (2026-04-21). Pick up in priority order.
 
 ## P1
 
-### Fix user.email! non-null assertion in /api/inquiry
-**What:** Replace `to: user.email!` (line 35 of `src/app/api/inquiry/route.ts`) with:
-```ts
-if (!user.email) return NextResponse.json({ error: '이메일 정보가 없어요' }, { status: 400 })
-```
-**Why:** TypeError crash if OAuth provider doesn't return an email. Silent 500 with no user feedback.
-**Effort:** XS | **Priority:** P1 | **Depends on:** Nothing
+### ~~Fix user.email! non-null assertion in /api/inquiry~~
+**Fixed by /qa on feat/getto-daze-app, 2026-04-21** (commit c61a719)
 
 ### 시/군/구 API coverage test (prerequisite for RegionSelector item 6)
 **What:** Before building the two-level RegionSelector, test the 농림축산식품부 API response distribution by 군구 code (org_cd). Check if provinces return usable sub-city shelter data consistently.
@@ -63,3 +58,9 @@ if (!user.email) return NextResponse.json({ error: '이메일 정보가 없어�
 - Animal personality AI summaries
 - Admin panel for data management
 - Kakao OAuth
+
+### Survey resets to step 1 after /api/match error
+**What:** When the AI match call fails, the survey resets to step 1. User has to redo all 6 questions.
+**Why:** Poor UX — user just answered 6 questions and gets no persistent state on failure.
+**Fix:** In `src/app/match/page.tsx`, preserve `answers` state on error and show a retry button instead of resetting.
+**Effort:** XS | **Priority:** P3 | **Depends on:** Nothing | **Found by:** /qa 2026-04-21
