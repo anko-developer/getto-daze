@@ -35,10 +35,11 @@ export async function POST(request: NextRequest) {
 
   const { error } = await getResendClient().emails.send({
     from: 'getto daze <onboarding@resend.dev>',
-    to: user.email,
+    to: 'mikkeller@naver.com',
     subject: `[getto daze] ${escapeHtml(String(animal_kind).replace(/\s+/g, ' ').trim())} 입양 문의 내용`,
     html: `
       <h2>문의하신 내용을 저장했어요</h2>
+      <p><strong>문의자 이메일:</strong> ${escapeHtml(String(user.email))}</p>
       <p><strong>동물 ID:</strong> ${escapeHtml(String(animal_id))}</p>
       <p><strong>품종:</strong> ${escapeHtml(String(animal_kind))}</p>
       <p><strong>보호센터:</strong> ${escapeHtml(String(care_nm))}</p>

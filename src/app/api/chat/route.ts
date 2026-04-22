@@ -1,5 +1,5 @@
 import { openai } from '@ai-sdk/openai'
-import { streamText } from 'ai'
+import { streamText, convertToModelMessages } from 'ai'
 import { NextRequest } from 'next/server'
 
 const SYSTEM_PROMPT = `당신은 한국 유기동물 입양 전문 상담사입니다.
@@ -13,9 +13,9 @@ export async function POST(request: NextRequest) {
   const result = streamText({
     model: openai('gpt-4o-mini'),
     system: SYSTEM_PROMPT,
-    messages,
+    messages: await convertToModelMessages(messages),
     maxOutputTokens: 500,
   })
 
-  return result.toTextStreamResponse()
+  return result.toUIMessageStreamResponse()
 }
